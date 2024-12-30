@@ -59,10 +59,8 @@ local function available_space()
 end
 
 M.treeOffset = function()
-  local tree_width = getNvimTreeWidth()
-  local spaces = "%#NvimTreeNormal#" .. strep(" ", tree_width)
-  local separator = tree_width > 0 and "%#NvimTreeWinSeparator#" .. "│" or ""
-  return spaces .. separator
+  local w = getNvimTreeWidth()
+  return w == 0 and "" or "%#NvimTreeNormal#" .. strep(" ", w) .. "%#NvimTreeWinSeparator#" .. "│"
 end
 
 M.buffers = function()
