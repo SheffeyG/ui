@@ -88,14 +88,12 @@ local function create(opts)
   local buf_exists = opts.buf
   opts.buf = opts.buf or vim.api.nvim_create_buf(false, true)
 
-  -- handle cmd opt
   local shell = vim.o.shell
-  local cmd = shell
 
+  -- handle cmd opt
+  local cmd = { shell }
   if opts.cmd and opts.buf then
     cmd = { shell, "-c", format_cmd(opts.cmd) .. "; " .. shell }
-  else
-    cmd = { shell }
   end
 
   M.display(opts)
