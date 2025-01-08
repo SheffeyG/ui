@@ -170,7 +170,8 @@ M.autocmds = function()
         progress = icon .. " " .. data.percentage .. "%% "
       end
 
-      local str = progress .. (data.message or "") .. " " .. (data.title or "")
+      local loaded_count = data.message and string.match(data.message, "^(%d+/%d+)") or ""
+      local str = progress .. (loaded_count or "") .. " " .. (data.title or "")
       M.state.lsp_msg = data.kind == "end" and "" or str
       vim.cmd.redrawstatus()
     end,
