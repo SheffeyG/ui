@@ -41,15 +41,15 @@ local function gen_unique_name(oldname, index)
   end
 end
 
-M.style_buf = function(nr, i, w)
+M.style_buf = function(bufid, bufindex, bufwidth)
   -- add fileicon + name
   local icon = "󰈚 "
-  local is_curbuf = cur_buf() == nr
+  local is_curbuf = cur_buf() == bufid
   local tbHlName = "BufO" .. (is_curbuf and "n" or "ff")
   local icon_hl = new_hl("DevIconDefault", tbHlName)
 
-  local name = filename(buf_name(nr))
-  name = gen_unique_name(name, i) or name
+  local name = filename(buf_name(bufid))
+  name = gen_unique_name(name, bufindex) or name
   name = (name == "" or not name) and " No Name " or name
 
   if name ~= " No Name " then
@@ -61,22 +61,25 @@ M.style_buf = function(nr, i, w)
     end
   end
 
-  -- padding around bufname; 15= maxnamelen + 2 icon & space + 2 close icon
-  local pad = math.floor((w - #name - 5) / 2)
-  pad = pad <= 0 and 1 or pad
+  -- padding 6 = left_icon 3 + right_icon 3
+  local maxname_len = bufwidth - 6
 
-  local maxname_len = 15
+  if #name > maxname_len then
+    name = string.sub(name, 1, maxname_len - 1) .. "…"
+  end
 
-  name = string.sub(name, 1, 13) .. (#name > maxname_len and ".." or "")
+  local lpad = math.floor((maxname_len - #name) / 2)
+  local rpad = maxname_len - #name - lpad
+
   name = M.txt(name, tbHlName)
 
-  name = strep(" ", pad - 1) .. (icon_hl .. icon .. name) .. strep(" ", pad - 1)
+  name = strep(" ", lpad) .. (icon_hl .. icon .. name) .. strep(" ", rpad)
 
-  local close_btn = btn(" 󰅖 ", nil, "KillBuf", nr)
-  name = btn(name, nil, "GoToBuf", nr)
+  local close_btn = btn(" 󰅖 ", nil, "KillBuf", bufid)
+  name = btn(name, nil, "GoToBuf", bufid)
 
   -- modified bufs icon or close icon
-  local mod = get_opt("mod", { buf = nr })
+  local mod = get_opt("mod", { buf = bufid })
   local cur_mod = get_opt("mod", { buf = 0 })
 
   -- color close btn for focused / hidden  buffers
