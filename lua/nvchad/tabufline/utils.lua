@@ -84,9 +84,9 @@ M.style_buf = function(bufid, bufindex, bufwidth)
 
   -- color close btn for focused / hidden  buffers
   if is_curbuf then
-    close_btn = cur_mod and txt("  ", "BufOnModified") or txt(close_btn, "BufOnClose")
+    close_btn = cur_mod and txt(" ● ", "BufOnModified") or txt(close_btn, "BufOnClose")
   else
-    close_btn = mod and txt("  ", "BufOffModified") or txt(close_btn, "BufOffClose")
+    close_btn = mod and txt(" ● ", "BufOffModified") or txt(close_btn, "BufOffClose")
   end
 
   name = txt(name .. close_btn, "BufO" .. (is_curbuf and "n" or "ff"))
