@@ -55,6 +55,17 @@ local function available_space()
   return vim.o.columns - modules.width
 end
 
+local function render_buffers(start, max)
+  local bufs_str = ""
+  for i, buf_id in ipairs(vim.t.bufs) do
+    if i >= start and i < (start + max) then
+      bufs_str = bufs_str .. style_buf(buf_id, i, opts.bufwidth)
+    end
+  end
+  -- buffers + empty space
+  return bufs_str .. txt("%=", "Fill")
+end
+
 ------------------------------------- modules -----------------------------------------
 
 M.treeOffset = function()
@@ -62,24 +73,26 @@ M.treeOffset = function()
   return w == 0 and "" or "%#NvimTreeNormal#" .. strep(" ", w) .. "%#NvimTreeWinSeparator#" .. "│"
 end
 
-M.buffers = function()
-  local buffers = {}
-  local has_current = false -- have we seen current buffer yet?
+g.tbl_bufs_start = 1
 
-  for i, nr in ipairs(vim.t.bufs) do
-    if ((#buffers + 1) * opts.bufwidth) > available_space() then
-      if has_current then
+M.buffers = function()
+  local max_tabs = math.floor(available_space() / opts.bufwidth)
+
+  for i, buf_id in ipairs(vim.t.bufs) do
+    if cur_buf() == buf_id then
+      -- on the left
+      if i < g.tbl_bufs_start then
+        g.tbl_bufs_start = i
+        break
+      -- on the right
+      elseif i >= g.tbl_bufs_start + max_tabs then
+        g.tbl_bufs_start = i - max_tabs + 1
         break
       end
-
-      table.remove(buffers, 1)
     end
-
-    has_current = cur_buf() == nr or has_current
-    table.insert(buffers, style_buf(nr, i, opts.bufwidth))
   end
 
-  return table.concat(buffers) .. txt("%=", "Fill") -- buffers + empty space
+  return render_buffers(g.tbl_bufs_start, max_tabs)
 end
 
 g.TbTabsToggled = 0
