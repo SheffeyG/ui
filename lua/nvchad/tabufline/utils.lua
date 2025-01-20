@@ -61,8 +61,8 @@ M.style_buf = function(bufid, bufindex, bufwidth)
     end
   end
 
-  -- padding 6 = left_icon 3 + right_icon 3
-  local maxname_len = bufwidth - 6
+  -- padding 5 = left_icon 3 + right_icon 2
+  local maxname_len = bufwidth - 5
 
   if #name > maxname_len then
     name = string.sub(name, 1, maxname_len - 1) .. "…"
@@ -72,10 +72,9 @@ M.style_buf = function(bufid, bufindex, bufwidth)
   local rpad = maxname_len - #name - lpad
 
   name = M.txt(name, tbHlName)
-
   name = strep(" ", lpad) .. (icon_hl .. icon .. name) .. strep(" ", rpad)
 
-  local close_btn = btn(" 󰅖 ", nil, "KillBuf", bufid)
+  local close_btn = btn(" ", nil, "KillBuf", bufid)
   name = btn(name, nil, "GoToBuf", bufid)
 
   -- modified bufs icon or close icon
@@ -84,9 +83,9 @@ M.style_buf = function(bufid, bufindex, bufwidth)
 
   -- color close btn for focused / hidden  buffers
   if is_curbuf then
-    close_btn = cur_mod and txt(" ● ", "BufOnModified") or txt(close_btn, "BufOnClose")
+    close_btn = cur_mod and txt(" ", "BufOnModified") or txt(close_btn, "BufOnClose")
   else
-    close_btn = mod and txt(" ● ", "BufOffModified") or txt(close_btn, "BufOffClose")
+    close_btn = mod and txt(" ", "BufOffModified") or txt(close_btn, "BufOffClose")
   end
 
   name = txt(name .. close_btn, "BufO" .. (is_curbuf and "n" or "ff"))
