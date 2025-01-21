@@ -26,6 +26,18 @@ vim.cmd [[
   endfunction ]]
 
 vim.cmd [[
+  function! TbGoLeft(a,b,c,d)
+    let g:tbl_bufs_start = g:tbl_bufs_start - 1
+    lua require('nvchad.tabufline.modules')()
+  endfunction ]]
+
+vim.cmd [[
+  function! TbGoRight(a,b,c,d)
+    let g:tbl_bufs_start = g:tbl_bufs_start + 1
+    lua require('nvchad.tabufline.modules')()
+  endfunction ]]
+
+vim.cmd [[
   function! TbNewTab(a,b,c,d)
     tabnew
   endfunction ]]
@@ -75,14 +87,21 @@ local function available_space()
 end
 
 local function render_buffers(start, max)
-  local bufs_str = g.tbl_bufs_start > 1 and "%#NvimTreeNormal#" or ""
+  -- early return to prevent unnecessary prompt icons
+  if #vim.t.bufs == 0 then
+    return txt("%=", "Fill")
+  end
+
+  local bufs_str = start > 1 and btn("", "Fill", "GoLeft") or ""
   for i, buf_id in ipairs(vim.t.bufs) do
     if i >= start and i < (start + max) then
       bufs_str = bufs_str .. style_buf(buf_id, i, opts.bufwidth)
     end
   end
-  local right_icon = g.tbl_bufs_start + max - 1 < #vim.t.bufs and "%#NvimTreeNormal#" or ""
-  return bufs_str .. right_icon .. txt("%=", "Fill")
+  if start + max - 1 < #vim.t.bufs then
+    bufs_str = bufs_str .. btn("", "Fill", "GoRight")
+  end
+  return bufs_str .. txt("%=", "Fill")
 end
 
 ------------------------------------- modules -----------------------------------------
