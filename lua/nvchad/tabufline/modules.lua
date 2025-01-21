@@ -75,14 +75,14 @@ local function available_space()
 end
 
 local function render_buffers(start, max)
-  local bufs_str = ""
+  local bufs_str = g.tbl_bufs_start > 1 and "%#NvimTreeNormal#" or ""
   for i, buf_id in ipairs(vim.t.bufs) do
     if i >= start and i < (start + max) then
       bufs_str = bufs_str .. style_buf(buf_id, i, opts.bufwidth)
     end
   end
-  -- buffers + empty space
-  return bufs_str .. txt("%=", "Fill")
+  local right_icon = g.tbl_bufs_start + max - 1 < #vim.t.bufs and "%#NvimTreeNormal#" or ""
+  return bufs_str .. right_icon .. txt("%=", "Fill")
 end
 
 ------------------------------------- modules -----------------------------------------
