@@ -83,12 +83,11 @@ M.buffers = function()
       -- on the left
       if i < g.tbl_bufs_start then
         g.tbl_bufs_start = i
-        break
       -- on the right
       elseif i >= g.tbl_bufs_start + max_tabs then
         g.tbl_bufs_start = i - max_tabs + 1
-        break
       end
+      break
     end
   end
 
