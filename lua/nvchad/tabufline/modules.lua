@@ -18,18 +18,37 @@ local M = {}
 vim.cmd [[
   function! TbGoToBuf(bufnr,b,c,d)
     call luaeval('require("nvchad.tabufline").goto_buf(_A)', a:bufnr)
-  endfunction]]
+  endfunction ]]
 
 vim.cmd [[
   function! TbKillBuf(bufnr,b,c,d) 
     call luaeval('require("nvchad.tabufline").close_buffer(_A)', a:bufnr)
-  endfunction]]
+  endfunction ]]
 
-vim.cmd "function! TbNewTab(a,b,c,d) \n tabnew \n endfunction"
-vim.cmd "function! TbGotoTab(tabnr,b,c,d) \n execute a:tabnr ..'tabnext' \n endfunction"
-vim.cmd "function! TbCloseAllBufs(a,b,c,d) \n lua require('nvchad.tabufline').closeAllBufs() \n endfunction"
-vim.cmd "function! TbToggle_theme(a,b,c,d) \n lua require('base46').toggle_theme() \n endfunction"
-vim.cmd "function! TbToggleTabs(a,b,c,d) \n let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline \n endfunction"
+vim.cmd [[
+  function! TbNewTab(a,b,c,d)
+    tabnew
+  endfunction ]]
+
+vim.cmd [[
+  function! TbGotoTab(tabnr,b,c,d)
+    execute a:tabnr ..'tabnext'
+  endfunction ]]
+
+vim.cmd [[
+  function! TbCloseAllBufs(a,b,c,d)
+    lua require('nvchad.tabufline').closeAllBufs()
+  endfunction ]]
+
+vim.cmd [[
+  function! TbToggle_theme(a,b,c,d)
+    lua require('base46').toggle_theme()
+  endfunction ]]
+
+vim.cmd [[
+  function! TbToggleTabs(a,b,c,d)
+    let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline
+  endfunction ]]
 
 ---------------------------------- functions -------------------------------------------
 
