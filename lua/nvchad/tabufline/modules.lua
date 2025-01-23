@@ -135,7 +135,7 @@ M.tabs = function()
 
   if tabs > 1 then
     for nr = 1, tabs, 1 do
-      local tab_hl = "TabO" .. (nr == fn.tabpagenr() and "n" or "ff")
+      local tab_hl = (nr == fn.tabpagenr() and "TabOn" or "TabOff")
       result = result .. btn(" " .. nr .. " ", tab_hl, "GotoTab", nr)
     end
 

@@ -45,7 +45,7 @@ M.style_buf = function(bufid, bufindex, bufwidth)
   -- add fileicon + name
   local icon = "󰈚 "
   local is_curbuf = cur_buf() == bufid
-  local tbHlName = "BufO" .. (is_curbuf and "n" or "ff")
+  local tbHlName = is_curbuf and "BufOn" or "BufOff"
   local icon_hl = new_hl("DevIconDefault", tbHlName)
 
   local name = filename(buf_name(bufid))
@@ -88,7 +88,7 @@ M.style_buf = function(bufid, bufindex, bufwidth)
     close_btn = mod and txt(" ", "BufOffModified") or txt(close_btn, "BufOffClose")
   end
 
-  name = txt(name .. close_btn, "BufO" .. (is_curbuf and "n" or "ff"))
+  name = txt(name .. close_btn, (is_curbuf and "BufOn" or "BufOff"))
 
   return name
 end
