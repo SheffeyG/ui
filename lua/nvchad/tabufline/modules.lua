@@ -18,53 +18,46 @@ local M = {}
 vim.cmd [[
   function! TbGoToBuf(bufnr,b,c,d)
     call luaeval('require("nvchad.tabufline").goto_buf(_A)', a:bufnr)
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbKillBuf(bufnr,b,c,d) 
     call luaeval('require("nvchad.tabufline").close_buffer(_A)', a:bufnr)
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbGoLeft(a,b,c,d)
     let g:tbl_bufs_start = g:tbl_bufs_start - 1
     lua require('nvchad.tabufline.modules')()
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbGoRight(a,b,c,d)
     let g:tbl_bufs_start = g:tbl_bufs_start + 1
     lua require('nvchad.tabufline.modules')()
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbNewTab(a,b,c,d)
     tabnew
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbGotoTab(tabnr,b,c,d)
     execute a:tabnr ..'tabnext'
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbCloseAllBufs(a,b,c,d)
     lua require('nvchad.tabufline').closeAllBufs()
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
-  function! TbToggle_theme(a,b,c,d)
+  function! TbToggleTheme(a,b,c,d)
     lua require('base46').toggle_theme()
-  endfunction ]]
+  endfunction 
 
-vim.cmd [[
   function! TbToggleTabs(a,b,c,d)
-    let g:TbTabsToggled = !g:TbTabsToggled | redrawtabline
-  endfunction ]]
+    let g:tbl_tabs_toggle = !g:tbl_tabs_toggle | redrawtabline
+  endfunction
+]]
 
 ---------------------------------- functions -------------------------------------------
 
-local function getNvimTreeWidth()
+local function get_tree_width()
   for _, win in pairs(api.nvim_tabpage_list_wins(0)) do
     if vim.bo[api.nvim_win_get_buf(win)].ft == "NvimTree" then
       return api.nvim_win_get_width(win)
@@ -106,9 +99,12 @@ end
 
 ------------------------------------- modules -----------------------------------------
 
-M.treeOffset = function()
-  local w = getNvimTreeWidth()
-  return w == 0 and "" or "%#NvimTreeNormal#" .. strep(" ", w) .. "%#NvimTreeWinSeparator#" .. "│"
+M.tree_offset = function()
+  local w = get_tree_width()
+  if w > 0 then
+    return "%#NvimTreeNormal#" .. strep(" ", w) .. "%#NvimTreeWinSeparator#" .. "│"
+  end
+  return ""
 end
 
 g.tbl_bufs_start = 1
@@ -132,7 +128,7 @@ M.buffers = function()
   return render_buffers(g.tbl_bufs_start, max_tabs)
 end
 
-g.TbTabsToggled = 0
+g.tbl_tabs_toggle = 0
 
 M.tabs = function()
   local result, tabs = "", fn.tabpagenr "$"
@@ -143,11 +139,11 @@ M.tabs = function()
       result = result .. btn(" " .. nr .. " ", tab_hl, "GotoTab", nr)
     end
 
-    local new_tabtn = btn(" 󰐕 ", "TabNewBtn", "NewTab")
-    local tabstoggleBtn = btn(" TABS ", "TabTitle", "ToggleTabs")
-    local small_btn = btn(" 󰅁 ", "TabTitle", "ToggleTabs")
+    local btn_new = btn(" 󰐕 ", "TabNewBtn", "NewTab")
+    local btn_toggle = btn(" TABS ", "TabTitle", "ToggleTabs")
+    local btn_small = btn(" 󰅁 ", "TabTitle", "ToggleTabs")
 
-    return g.TbTabsToggled == 1 and small_btn or new_tabtn .. tabstoggleBtn .. result
+    return g.tbl_tabs_toggle == 1 and btn_small or btn_new .. btn_toggle .. result
   end
 
   return ""
@@ -156,15 +152,11 @@ end
 g.toggle_theme_icon = "   "
 
 M.btn_toggle_theme = function()
-  return btn(g.toggle_theme_icon, "ThemeToggleBtn", "Toggle_theme")
+  return btn(g.toggle_theme_icon, "ThemeToggleBtn", "ToggleTheme")
 end
 
 M.btn_close_all = function()
   return btn(" 󰅖 ", "CloseAllBufsBtn", "CloseAllBufs")
-end
-
-M.btns = function()
-  return M.btn_toggle_theme() .. M.btn_close_all()
 end
 
 return function()

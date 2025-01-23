@@ -50,12 +50,12 @@ M.close_buffer = function(bufnr)
       vim.cmd "bw"
       return
 
-      -- handle listed bufs
+    -- handle listed bufs
     elseif curBufIndex and #vim.t.bufs > 1 then
       local newBufIndex = curBufIndex == #vim.t.bufs and -1 or 1
       vim.cmd("b" .. vim.t.bufs[curBufIndex + newBufIndex])
 
-      -- handle unlisted
+    -- handle unlisted
     elseif not vim.bo.buflisted then
       local tmpbufnr = vim.t.bufs[1]
       api.nvim_set_current_win(vim.fn.bufwinid(bufnr))
@@ -88,7 +88,7 @@ M.closeAllBufs = function(include_cur_buf)
 end
 
 -- closes all other buffers right or left
-M.closeBufs_at_direction = function(x)
+M.close_in_direction = function(x)
   local buf_i = buf_index(cur_buf())
 
   for i, bufnr in ipairs(vim.t.bufs) do
